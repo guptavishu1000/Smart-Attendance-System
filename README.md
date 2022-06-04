@@ -8,4 +8,4 @@ Initially user need to register themself which takes upto 20-30 images of user a
 - `pip install -r requirements.txt`
 - then you can run main.py
 - `python main.py`
-### Demoo video link is [here](https://youtu.be/pXX4shnUhq4)
+### Demo video link is [here](https://youtu.be/pXX4shnUhq4)
