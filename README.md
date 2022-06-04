@@ -8,5 +8,5 @@ Initially user need to register themself which takes upto 20-30 images of user a
 - `pip install -r requirements.txt`
 - then you can run main.py
 - `python main.py`
-- if take `Submit Attendance` Button on take attendance then run `pip uninstall opencv-contrib-python` and then  `pip install opencv-contrib-python` 1-2 times.
+- if take `Submit Attendance` Button on` Take Attendance` does not responds then run `pip uninstall opencv-contrib-python` and then  `pip install opencv-contrib-python` 1-2 times.
 ### Demo video link is [here](https://youtu.be/pXX4shnUhq4)
