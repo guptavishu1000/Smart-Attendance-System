@@ -1,25 +1,24 @@
 # importing required modules
 import os
-import tkinter        
 import customtkinter        # for better UI
 from PIL import Image , ImageTk
 import PIL
+from utils import automaticAttendance , show_attendance
 
 customtkinter.set_appearance_mode("System")  
 customtkinter.set_default_color_theme("blue") 
 
 PATH = os.path.dirname(os.path.realpath(__file__))
 
-from utils import automaticAttendance , show_attendance
 
-add_user_image = PIL.Image.open(PATH + "\\Icons\\add-user.png")
+add_user_image = PIL.Image.open(os.path.join(PATH , "Icons","add-user.png"))
 add_user_image = add_user_image.resize((50, 50), Image.ANTIALIAS)
 
-take_att_image = PIL.Image.open(PATH + "\\Icons\\person-bounding-box.png")
+take_att_image = PIL.Image.open(os.path.join(PATH , "Icons","person-bounding-box.png"))
 take_att_image = take_att_image.resize((50, 50), Image.ANTIALIAS)
 
 
-admin_login_image = PIL.Image.open(PATH + "\\Icons\\add-list.png")
+admin_login_image = PIL.Image.open(os.path.join(PATH , "Icons","add-list.png"))
 admin_login_image = admin_login_image.resize((50, 50), Image.ANTIALIAS)
 
 
@@ -29,14 +28,18 @@ app.title("Smart Attendance System")
 
 def register_function():
     app.destroy()
-    os.system(PATH+"\\registeration\\register.py")
+    # opening register.py inside registeration
+    # registeration, taking images of user and training images 
+    os.system(os.path.join(PATH,"registeration","register.py"))
 
 def take_attendance():
     app.destroy()
+    # choosing subject followed by taking attendance
     automaticAttendance.subjectChoose()
 
 def view_attendance():
     app.destroy()
+    # showing attendance
     show_attendance.show_attendance()
 
 
@@ -61,13 +64,13 @@ registerButton = customtkinter.CTkButton(master=frame_1, image=ImageTk.PhotoImag
 registerButton.grid(row=3, column=5,  padx=40, pady=20, sticky="ew")
 
 
-alreadyRegisterButton = customtkinter.CTkButton(master=frame_1, image=ImageTk.PhotoImage(take_att_image), text="Take \nAttendance",
+TakeAttendanceButton = customtkinter.CTkButton(master=frame_1, image=ImageTk.PhotoImage(take_att_image), text="Take \nAttendance",
                                  width=190, height=40,text_font=("Roboto Medium", -16),
                                    compound="right", fg_color="#D35B58", hover_color="#C77C78",
                                    command=take_attendance)
 
 
-alreadyRegisterButton.grid(row=5, column=5,  padx=40, pady=20, sticky="ew")
+TakeAttendanceButton.grid(row=5, column=5,  padx=40, pady=20, sticky="ew")
 
 
 
