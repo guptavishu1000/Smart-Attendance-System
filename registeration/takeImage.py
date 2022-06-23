@@ -51,7 +51,7 @@ def TakeImage(l1, l2, haarcasecade_path, trainimage_path, message, err_screen,te
             cv2.destroyAllWindows()
             row = [Roll_Number, Name]
             with open(
-                "\\".join(os.path.dirname(os.path.realpath(__file__)).split("\\")[:-1])+"\\StudentDetails\\studentdetails.csv",
+                os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))),"StudentDetails","studentdetails.csv"),
                 "a+",
             ) as csvFile:
                 writer = csv.writer(csvFile, delimiter=",")
