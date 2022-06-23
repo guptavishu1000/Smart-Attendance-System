@@ -1,1 +1,0 @@
-fg_color="#D35B58", hover_color="#C77C78",
