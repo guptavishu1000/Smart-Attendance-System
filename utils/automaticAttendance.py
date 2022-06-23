@@ -12,14 +12,14 @@ from PIL import Image , ImageTk
 import PIL
 
 
-PATH = "\\".join(os.path.dirname(os.path.realpath(__file__)).split("\\")[:-1])
-haarcasecade_path = PATH+"\\haarcascade_frontalface_default.xml"
-trainimagelabel_path = (PATH+"\\TrainingImageLabel\\Trainner.yml")
-trainimage_path = PATH+"\\TrainingImage"
-studentdetail_path = (PATH+"\\StudentDetails\\studentdetails.csv")
-attendance_path = PATH+"\\Attendance"
+PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+haarcasecade_path = os.path.join(PATH,"haarcascade_frontalface_default.xml")
+trainimagelabel_path = os.path.join(PATH,"TrainingImageLabel","Trainner.yml")
+trainimage_path = os.path.join(PATH,"TrainingImage")
+studentdetail_path = os.path.join(PATH,"StudentDetails","studentdetails.csv")
+attendance_path = os.path.join(PATH,"Attendance")
 
-home_image = PIL.Image.open(PATH + "\\Icons\\home.png")
+home_image = PIL.Image.open(os.path.join(PATH,"Icons","home.png"))
 home_image = home_image.resize((50, 50), Image.ANTIALIAS)
 
 def text_to_speech(user_text):
@@ -35,15 +35,16 @@ def subjectChoose():
         sub = tx.get()
         now = time.time()
         future = now + 10
-        print(now)
-        print(future)
+        # print(now)
+        # print(future)
         if sub == "":
             t = "Please enter the subject name!!!"
             text_to_speech(t)
         else:
             try:
+                print("Filling Attendance...")
                 recognizer = cv2.face.LBPHFaceRecognizer_create()
-                # print(1)
+
                 try:
                     recognizer.read(trainimagelabel_path)
                 except:
@@ -54,12 +55,10 @@ def subjectChoose():
                     Notifica.grid(row=13 , column=1,padx=20, pady=20, sticky="ew")
                     text_to_speech(e)
                 facecasCade = cv2.CascadeClassifier(haarcasecade_path)
-                # print(2)
                 df = pd.read_csv(studentdetail_path)
                 cam = cv2.VideoCapture(0)
                 font = cv2.FONT_HERSHEY_PLAIN
                 col_names = ["Roll_Number", "Name"]
-                print("col_names")
                 attendance = pd.DataFrame(columns=col_names)
                 while True:
                     ___, im = cam.read()
@@ -74,15 +73,12 @@ def subjectChoose():
                             global Subject
                             global userName
                             global date
-                            global timeStamp
                             Subject = tx.get()
                             ts = time.time()
                             date = datetime.datetime.fromtimestamp(ts).strftime(
                                 "%Y-%m-%d"
                             )
-                            timeStamp = datetime.datetime.fromtimestamp(ts).strftime(
-                                "%H:%M:%S"
-                            )
+
                             userName = df.loc[df["Roll_Number"] == Id]["Name"].values
                             userName = str(userName[0])
                             attendance.loc[len(attendance)] = [
@@ -101,9 +97,8 @@ def subjectChoose():
                             )
                     if time.time() > future:
                         break
-                    
                     attendance = attendance.drop_duplicates(
-                        ["Roll_Number"], keep="first"
+                        subset=["Roll_Number"], keep="last"
                     )
                     
                     cv2.imshow("Filling Attendance...", im)
@@ -112,42 +107,36 @@ def subjectChoose():
                         break
 
                 ts = time.time()
-               
+                print(attendance)
                 attendance[date] = 1
                 date = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d")
-                timeStamp = datetime.datetime.fromtimestamp(ts).strftime("%H:%M:%S")
-                Hour, Minute, Second = timeStamp.split(":")
+               
                 # fileName = "Attendance/" + Subject + ".csv"
-                print(attendance)
+                # print("Line-116",attendance)
                 path = os.path.join(attendance_path, Subject)
                 if not os.path.isdir(path):
                     os.mkdir(
                         path
                     )
-                print("path",path)
+                # print("path",pa`th)
                 fileName = (
-                    path+"\\"+Subject+ "_"+ date+ ".csv"
+                    os.path.join(path,Subject+ "_"+ date+ ".csv")
                 )
-                # print("fileName   ",fileName)
-                attendance = attendance.drop_duplicates(["Roll_Number"], keep="first")
+                attendance = attendance.drop_duplicates(subset=["Roll_Number"], keep="last")
                 l1 = os.listdir(path)
                 availFileName = os.path.basename(fileName)
-                print(l1,availFileName,path,fileName)
+                # print(l1,availFileName,path,fileName)
                 if availFileName in l1:
-                    print("HELLO")
+                    # print("YES")
                     file1 = pd.read_csv(fileName)
-                    
                     attendance = pd.concat([file1,attendance],axis=0)
-                    print("1")
-                    os.remove(fileName)
-                    print("2")
-                    attendance.drop_duplicates(["Roll_Number"], keep="first")
-                    print("3")
-                    attendance.to_csv(availFileName,index=False)
-                    print("success upated")
+                    attendance.drop_duplicates(subset=["Roll_Number"], keep="last",inplace=True)
+                    attendance.to_csv(fileName,index=False)
+                    print("successfully attendance file updated")
 
                 else :
                     attendance.to_csv(fileName, index=False)
+                    print("successfully attendance file created")
                 
                 m = "Attendance Filled Successfully of " + Subject
                 text_to_speech(m)
@@ -155,19 +144,17 @@ def subjectChoose():
                     text=m
                 )
                 Notifica.grid(row=13 , column=1,padx=20, pady=20, sticky="ew")
-                #Notifica.place(x=20, y=250)
 
                 cam.release()
                 cv2.destroyAllWindows()
 
                 import csv
                 import tkinter
-
+                print("Presenting Taken Attendance...")
                 root = tkinter.Tk()
                 root.title("Attendance of " + Subject)
                 root.configure(background="black")
                 cs = os.path.join(path, fileName)
-                print(cs)
                 with open(cs, newline="") as file:
                     reader = csv.reader(file)
                     r = 0
@@ -189,15 +176,15 @@ def subjectChoose():
                             label.grid(row=r, column=c)
                             c += 1
                         r += 1
+                print("Presented :)")
                 root.mainloop()
-                print(attendance)
             except:
                 f = "No Face found for attendance"
                 text_to_speech(f)
                 cv2.destroyAllWindows()
 
     
-    subject = ctk.CTk()
+    subject = ctk.CTk()   
     subject.geometry("800x500")
     subject.title("Take Attendance")
     subject.resizable(0, 0)
@@ -205,7 +192,6 @@ def subjectChoose():
 
     def home():
         subject.destroy()
-        import os
         os.system('main.py')
     frame_1 = ctk.CTkFrame(master=subject, width=250, height=240, corner_radius=15)
     frame_1.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
@@ -242,15 +228,6 @@ def subjectChoose():
         text_font=("times", 15, "bold"),
     )
 
-    def Attf():
-        sub = tx.get()
-        if sub == "":
-            t = "Please enter the subject name"
-            text_to_speech(t)
-        else:
-            os.chdir(
-                PATH+"\\Attendance\\"+sub
-            )
 
     fill_a = ctk.CTkButton(
         frame_1,
@@ -262,15 +239,5 @@ def subjectChoose():
     )
 
     fill_a.grid(row=11, column=1,  padx=20, pady=20, sticky="ew")
-
-    # attf = ctk.CTkButton(
-    #     subject,
-    #     text="Check Sheets",
-    #     command=Attf,
-    #     text_font=("times new roman", 20),
-    # height=4,
-    # width=16
-    # )
-    # attf.place(x=450, y=170)
 
     subject.mainloop()
