@@ -5,7 +5,7 @@ import pyttsx3
 import customtkinter  as ctk    # for better UI
 from PIL import Image , ImageTk
 import PIL
-
+from customtkinter import CTkImage
 
 # project module
 import  takeImage, trainImage
@@ -18,7 +18,7 @@ ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
 PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 home_image = PIL.Image.open(os.path.join(PATH, "Icons","home.png"))
-home_image = home_image.resize((50, 50), Image.ANTIALIAS)
+home_image = home_image.resize((50, 50), Image.Resampling.LANCZOS)
 
 
 def text_to_speech(user_text):
@@ -61,7 +61,7 @@ def err_screen():
 
 def home():
     ImageUI.destroy()
-    os.system('main.py')
+    os.system(f'python "{os.path.join(PATH,"main.py")}"')
 
 haarcasecade_path = os.path.join(PATH,"haarcascade_frontalface_default.xml")
 trainimagelabel_path = (
@@ -81,10 +81,10 @@ frame_1 = ctk.CTkFrame(master=ImageUI, width=250, height=240, corner_radius=15)
 frame_1.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
 
 Button = ctk.CTkLabel(master=frame_1,  width=190, height=40,
-                                   text="Student Registration",text_font=("Roboto Medium", -16))
+                                   text="Student Registration",font=("Roboto Medium", -16))
 Button.grid(row=1, column=5,  padx=5, pady=10, sticky="ew")
 
-homeButton = ctk.CTkButton(master=ImageUI, image=ImageTk.PhotoImage(image=home_image),
+homeButton = ctk.CTkButton(master=ImageUI, image=CTkImage(light_image=home_image),
                                     text="", height=40,
                                    compound="right", command=home)
 homeButton.place(x=450, y= 10)
@@ -93,7 +93,7 @@ frame_2 = ctk.CTkFrame(master=ImageUI, width=250, height=240, corner_radius=15)
 frame_2.grid(row=1, column=0, padx=30, pady=20, sticky="nsew")
 
 rollno = ctk.CTkLabel(master=frame_2,  width=190, height=40,
-                                   text="Roll No",text_font=("Roboto Medium", -16))
+                                   text="Roll No",font=("Roboto Medium", -16))
 rollno.grid(row=1, column=1,  padx=5, pady=10, sticky="ew")
 
 txt1 = tk.Entry(ImageUI, width=14, validate="key", bg="grey",
@@ -107,7 +107,7 @@ frame_3 = ctk.CTkFrame(master=ImageUI, width=250, height=240, corner_radius=15)
 frame_3.grid(row=2, column=0, padx=30, pady=10, sticky="nsew")
 
 name = ctk.CTkLabel(master=frame_3,  width=190, height=40,
-                                   text="Name",text_font=("Roboto Medium", -16))
+                                   text="Name",font=("Roboto Medium", -16))
 name.grid(row=1, column=1,  padx=5, pady=10, sticky="ew")
 
 txt2 = tk.Entry(ImageUI,width=14,bg="grey",
@@ -117,8 +117,8 @@ txt2.place(x=270, y=240)
 
 
 message = ctk.CTkLabel(ImageUI,text="",width=30,height=2,
-    fg="green",
-    text_font=("times", 12, "bold")
+    fg_color="green",
+    font=("times", 12, "bold")
 )
 
 message.place(x=100, y=300)
@@ -138,7 +138,7 @@ def take_image():
 takeImg = ctk.CTkButton(
     ImageUI,text="Register",
     command=take_image,
-    text_font=("times new roman", 20),
+    font=("times new roman", 20),
     height=4,
     width=16,
     fg_color="#D35B58", hover_color="#C77C78",

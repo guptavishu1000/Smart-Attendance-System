@@ -1,1 +1,4 @@
-TrainingImage/
+TrainingImage/*
+venv/
+**/__pycache__/
+Attendance/*
